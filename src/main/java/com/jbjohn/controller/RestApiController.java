@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  */
 @RestController
-@RequestMapping(value = "/", produces = {"application/json"})
+@RequestMapping(value = "/rest", produces = {"application/json"})
 public class RestApiController {
 
     @RequestMapping("")
