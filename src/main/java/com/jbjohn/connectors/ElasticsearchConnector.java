@@ -21,7 +21,7 @@ public final class ElasticsearchConnector {
      */
     public Client create() throws Exception {
         // Pull values from the Tomcat Context XML.
-        String cluster = "";
+        String cluster = "localhost";
         String server = "localhost";
         Integer port = 9300;
         String timeout = null;
@@ -39,7 +39,7 @@ public final class ElasticsearchConnector {
 
         // Configure the cluster settings.
         Settings settings = ImmutableSettings.settingsBuilder()
-                //.put("cluster.name", cluster)
+                .put("cluster.name", cluster)
                 .put("transport.tcp.connect_timeout", timeout)
                 .put("transport.tcp.compress", enableCompression)
                 .build();
