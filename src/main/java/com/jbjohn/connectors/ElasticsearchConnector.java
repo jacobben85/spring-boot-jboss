@@ -2,11 +2,12 @@ package com.jbjohn.connectors;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
 
 /**
  * Client class for connecting to Elasticsearch prior to Dari support.
@@ -21,7 +22,7 @@ public final class ElasticsearchConnector {
      */
     public Client create() throws Exception {
         // Pull values from the Tomcat Context XML.
-        String cluster = "localhost";
+        String cluster = "elasticsearch_jacobbennyjohn";
         String server = "localhost";
         Integer port = 9300;
         String timeout = null;
@@ -38,15 +39,17 @@ public final class ElasticsearchConnector {
         }
 
         // Configure the cluster settings.
-        Settings settings = ImmutableSettings.settingsBuilder()
+        Settings settings = Settings.settingsBuilder()
                 .put("cluster.name", cluster)
                 .put("transport.tcp.connect_timeout", timeout)
                 .put("transport.tcp.compress", enableCompression)
                 .build();
 
         // Create a new transport client.
-        TransportClient transportClient = new TransportClient(settings);
-        transportClient = transportClient.addTransportAddress(new InetSocketTransportAddress(server, port));
+        InetSocketTransportAddress address = new InetSocketTransportAddress(InetAddress.getByName(server), port);
+        LOGGER.info("Address : " + address.toString());
+        TransportClient transportClient = TransportClient.builder().settings(settings).build();
+        transportClient = transportClient.addTransportAddress(address);
 
         LOGGER.info("Elasticsearch client created successfully!");
         return transportClient;

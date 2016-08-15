@@ -5,6 +5,8 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
+import org.elasticsearch.common.collect.HppcMaps;
+import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,27 +43,34 @@ public class RestApiController {
     }
     
     @RequestMapping("/search")
-    public String search() {
+    public Map<String, Object> search() {
+        Map<String, Object> responseMap = new HashMap<>();
+
         Client client = ElasticsearchWrapper.getClient();
-        SearchResponse response = client.prepareSearch("index")
-        .setTypes("type")
-        .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-        .setQuery(QueryBuilders.termQuery("multi", "1"))
-        .setFrom(0).setSize(60).setExplain(true)
+        SearchResponse response = client.prepareSearch()
+        .setQuery(QueryBuilders.queryStringQuery("1"))
         .execute()
         .actionGet();
-        
-        return response.getHits().toString();
+
+        SearchHit[] results = response.getHits().getHits();
+        for(SearchHit hit : results){
+            Map<String, Object> resultMap = hit.sourceAsMap();
+            if (resultMap != null) {
+                responseMap.put((String) resultMap.get("id"), resultMap);
+            }
+        }
+
+        return responseMap;
     }
 
     @RequestMapping("/get")
-    public GetResponse get() {
+    public Map<String, Object> get() {
         Client client = ElasticsearchWrapper.getClient();
-        return client.prepareGet("index", "type", "1").get();
+        return client.prepareGet("index", "type", "1").execute().actionGet().getSourceAsMap();
     }
 
     @RequestMapping("/put")
-    public Boolean put() {
+    public String put() {
         Client client = ElasticsearchWrapper.getClient();
         try {
 
@@ -83,10 +92,10 @@ public class RestApiController {
 
             UpdateResponse response = client.update(updateRequest).get();
 
-            return response.isCreated();
+            return Long.toString(response.getVersion());
         } catch (IOException | InterruptedException | ExecutionException e) {
             LOGGER.error("Exception sending data to ES", e);
         }
-        return false;
+        return "0";
     }
 }
