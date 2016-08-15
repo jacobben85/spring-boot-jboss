@@ -21,10 +21,14 @@
             </tr>
             <tr ng-show="events.length">
                 <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
             </tr>
             </thead>
             <tr ng-repeat="event in events">
                 <td ng-class-odd="'odd'">{{ event.id }}</td>
+                <td ng-class-odd="'odd'">{{ event.name }}</td>
+                <td ng-class-odd="'odd'">{{ event.description }}</td>
             </tr>
         </table>
     </div>
