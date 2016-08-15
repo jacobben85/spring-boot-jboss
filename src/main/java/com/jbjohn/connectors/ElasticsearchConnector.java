@@ -19,7 +19,6 @@ public final class ElasticsearchConnector {
      * Create a Lazy Client so it is only loaded when the get method is used.
      * By making this variable static and final it will only be loaded once per JVM session.
      */
-
     public Client create() throws Exception {
         // Pull values from the Tomcat Context XML.
         String cluster = "";
