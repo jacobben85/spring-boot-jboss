@@ -13,4 +13,9 @@ public class DisplayController {
     String index() {
         return "default";
     }
+
+    @RequestMapping("/search")
+    String search() {
+        return "search";
+    }
 }

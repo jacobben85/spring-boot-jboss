@@ -10,11 +10,13 @@ import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.jbjohn.connectors.ElasticsearchWrapper;
 import org.elasticsearch.client.Client;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -43,21 +45,32 @@ public class RestApiController {
     }
     
     @RequestMapping("/search")
-    public Map<String, Object> search() {
+    public Map<String, Object> search(@RequestParam(required = false)
+                                          final String q) {
+
+        /**
+         * @TODO Improve this part
+         * If there are no results or if the query is incomplete add AI.
+         */
         Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("count", 0);
 
-        Client client = ElasticsearchWrapper.getClient();
-        SearchResponse response = client.prepareSearch()
-        .setQuery(QueryBuilders.queryStringQuery("1"))
-        .execute()
-        .actionGet();
-
-        SearchHit[] results = response.getHits().getHits();
-        for(SearchHit hit : results){
-            Map<String, Object> resultMap = hit.sourceAsMap();
-            if (resultMap != null) {
-                responseMap.put((String) resultMap.get("id"), resultMap);
+        if (q != null) {
+            Client client = ElasticsearchWrapper.getClient();
+            SearchResponse response = client.prepareSearch()
+                    .setQuery(QueryBuilders.queryStringQuery(q))
+                    .execute()
+                    .actionGet();
+            SearchHit[] results = response.getHits().getHits();
+            ArrayList<Map<String, Object>> resultsArray = new ArrayList<>();
+            for(SearchHit hit : results){
+                Map<String, Object> resultMap = hit.sourceAsMap();
+                if (resultMap != null) {
+                    resultsArray.add(resultMap);
+                }
             }
+            responseMap.put("count", resultsArray.size());
+            responseMap.put("results", resultsArray);
         }
 
         return responseMap;
