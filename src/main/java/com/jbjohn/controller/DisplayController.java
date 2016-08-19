@@ -28,4 +28,11 @@ public class DisplayController {
         model.addAttribute("dockerUri", dockerUri);
         return "search";
     }
+
+    @RequestMapping("/postgres")
+    String postgres(final Model model) {
+        String dockerUri = "http://" + config.getEshost() + "/";
+        model.addAttribute("dockerUri", dockerUri);
+        return "postgres";
+    }
 }
