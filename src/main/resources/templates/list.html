@@ -8,6 +8,7 @@
 
     <link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/css/bootstrap.min.css"
           th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet" media="screen" />
+    <link rel="stylesheet" media="screen" th:href="@{/css/styles.css}" />
 </head>
 <body>
 
@@ -19,10 +20,23 @@
 </div>
 <div class="container">
     <div class="starter-template">
-        <h1>Docker Demo Application</h1>
-        <p class="lead">
-            Something terribly went wrong, click <a href="/">here</a> to get back home.
-        </p>
+        <h1>Employee List</h1>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>FIRST NAME</th>
+                <th>LAST NAME</th>
+            </tr>
+            <tr th:each="employee, iterStatus : ${employees}">
+                <td th:text="${employee.id}">1</td>
+                <td th:text="${employee.firstName}">First name</td>
+                <td th:text="${employee.lastName}">Last name</td>
+            </tr>
+        </table>
+
+        <br/>
+        <a class="btn btn-default" role="button" href="/employee">Add another employee</a>
     </div>
 </div>
 

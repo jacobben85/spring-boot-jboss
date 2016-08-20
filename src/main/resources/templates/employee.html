@@ -19,10 +19,12 @@
 </div>
 <div class="container">
     <div class="starter-template">
-        <h1>Docker Demo Application</h1>
-        <p class="lead">
-            Something terribly went wrong, click <a href="/">here</a> to get back home.
-        </p>
+        <h1>Add an employee record here</h1>
+        <form action="#" th:action="@{/employee}" th:object="${employee}" method="post">
+            <p>First name : <input type="text" th:field="*{firstName}"/></p>
+            <p>Last name : <input type="text" th:field="*{lastName}"/></p>
+            <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
+        </form>
     </div>
 </div>
 
