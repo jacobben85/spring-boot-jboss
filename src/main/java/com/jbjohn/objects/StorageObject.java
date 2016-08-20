@@ -24,7 +24,7 @@ abstract class StorageObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id; // auto generated field
+    private int id; // auto generated field
 
     private UUID hash;
 
@@ -38,7 +38,7 @@ abstract class StorageObject {
         }
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
