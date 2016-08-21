@@ -48,6 +48,8 @@ public class DisplayController {
     // add record
     @RequestMapping(value = "/employee", method = RequestMethod.GET)
     String employee(Model model) {
+        String dockerUri = "http://" + config.getEshost() + "/";
+        model.addAttribute("dockerUri", dockerUri);
         model.addAttribute("employee", new Employee());
         return "employee";
     }
@@ -55,6 +57,8 @@ public class DisplayController {
     // store and display
     @RequestMapping(value = "/employee", method = RequestMethod.POST)
     String employeeResult(@ModelAttribute Employee employee, Model model) {
+        String dockerUri = "http://" + config.getEshost() + "/";
+        model.addAttribute("dockerUri", dockerUri);
         repo.save(employee);
         model.addAttribute("employee", employee);
         return "result";
@@ -63,6 +67,9 @@ public class DisplayController {
     // listing
     @RequestMapping("/employees")
     String employeeResult(Model model) {
+        String dockerUri = "http://" + config.getEshost() + "/";
+        model.addAttribute("dockerUri", dockerUri);
+
         Iterable<Employee> list = repo.findAll();
 
         ArrayList<Employee> employees = new ArrayList<>();
