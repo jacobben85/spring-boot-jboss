@@ -2,6 +2,9 @@ var search = angular.module('search', []);
 
 searchResults = function($scope, $http) {
     $scope.events = [];
+    $scope.count = 0;
+    $scope.time = "";
+    $scope.maxScore = "";
 
     $scope.search = function() {
         $http.get('/rest/partSearch/?q=' + $scope.searchKey).success(function(data) {
@@ -14,7 +17,7 @@ searchResults = function($scope, $http) {
                 } else {
                     $scope.events = [];
                     $scope.count = 0;
-                    $scope.time = "";
+                    $scope.time = "0ms";
                     $scope.maxScore = "";
                 }
             } catch(err) {
