@@ -113,4 +113,39 @@ public class RestApiController {
         }
         return "0";
     }
+
+    @RequestMapping("/partSearch")
+    public Map<String, Object> partSearch(@RequestParam(required = false)
+                                      final String q) {
+
+        /**
+         * @TODO Improve this part
+         * If there are no results or if the query is incomplete add AI.
+         */
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("count", 0);
+
+        if (q != null) {
+            Client client = ElasticsearchWrapper.getClient(config);
+            SearchResponse response = client.prepareSearch("sample")
+                    .setQuery(QueryBuilders.queryStringQuery(q))
+                    .execute()
+                    .actionGet();
+
+            SearchHit[] results = response.getHits().getHits();
+            ArrayList<Map<String, Object>> resultsArray = new ArrayList<>();
+            for(SearchHit hit : results){
+                Map<String, Object> resultMap = hit.sourceAsMap();
+                if (resultMap != null) {
+                    resultsArray.add(resultMap);
+                }
+            }
+            responseMap.put("count", response.getHits().getTotalHits());
+            responseMap.put("time", response.getTook().toString());
+            responseMap.put("maxScore", response.getHits().getMaxScore());
+            responseMap.put("results", resultsArray);
+        }
+
+        return responseMap;
+    }
 }

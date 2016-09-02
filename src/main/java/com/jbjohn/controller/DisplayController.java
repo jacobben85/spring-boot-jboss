@@ -38,6 +38,13 @@ public class DisplayController {
         return "search";
     }
 
+    @RequestMapping("/partSearch")
+    String partSearch(final Model model) {
+        String dockerUri = "http://" + config.getEshost() + "/";
+        model.addAttribute("dockerUri", dockerUri);
+        return "partSearch";
+    }
+
     @RequestMapping("/postgres")
     String postgres(final Model model) {
         String dockerUri = "http://" + config.getEshost() + "/";
